@@ -1,5 +1,6 @@
 
 import { useEffect, useState } from "react";
+import Evaluaciones from "./Evaluaciones";
 import {
   LayoutDashboard,
   Users,
@@ -162,10 +163,10 @@ function Sidebar({ active, setActive, open, setOpen }) {
   const navigate = useNavigate();
   const items = [
     { label: "Dashboard", icon: LayoutDashboard, path: "/" },
-    { label: "Estudiantes", icon: Users, path: "/" },
-    { label: "Evaluaciones", icon: FileText, path: "/" },
+    { label: "Evaluaciones", icon: FileText, path: "/evaluaciones" },
     { label: "Convenios", icon: Building2, path: "/" },
-    { label: "Informes", icon: FileText, path: "/" },
+    { label: "Informes", icon: FileText, path: "/evaluaciones" },
+    { label: "Asistencias", icon: ClipboardCheck, path: "/asistencias" },
   ];
 
   return (
@@ -640,7 +641,13 @@ function App() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    setActive("Dashboard");
+    const rutas = {
+      "/": "Dashboard",
+      "/asistencias": "Asistencias",
+      "/evaluaciones": "Evaluaciones",
+    };
+
+    setActive(rutas[location.pathname] || "Dashboard");
   }, [location.pathname]);
 
   return (
@@ -667,6 +674,49 @@ function App() {
       <Route
         path="/asistencias"
         element={<AsistenciasPage />}
+      />
+      <Route
+        path="/evaluaciones"
+        element={
+          <div className="app-shell">
+            <Sidebar
+              active={active}
+              setActive={setActive}
+              open={open}
+              setOpen={setOpen}
+            />
+
+            <main className="main-content">
+              <header className="topbar">
+                <button
+                  className="mobile-menu"
+                  onClick={() => setOpen(!open)}
+                  aria-label="Abrir menú"
+                >
+                  <Menu size={22} />
+                </button>
+
+                <div className="breadcrumb">
+                  <span>Prácticas Profesionales</span>
+                  <span className="crumb-separator">/</span>
+                  <strong>Evaluaciones</strong>
+                </div>
+
+                <div className="topbar-right">
+                  <div className="topbar-user">
+                    <div className="avatar">CP</div>
+                    <span>Coordinación</span>
+                    <ChevronDown size={15} />
+                  </div>
+                </div>
+              </header>
+
+              <div className="page-container">
+                <Evaluaciones />
+              </div>
+            </main>
+          </div>
+        }
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
